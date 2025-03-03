@@ -10,7 +10,13 @@ import ThemeHandler from "@/components/ThemeHandler"
 import { themes } from "@/lib/themes"
 import Image from 'next/image'
 
-const PortfolioPage = async ({ params }: { params: { username: string } }) => {
+interface PageProps {
+  params: {
+    username: string;
+  };
+}
+
+const PortfolioPage = async ({ params }: PageProps) => {
   const { userId } = await auth()
 
   const portfolio = await prisma.portfolio.findFirst({
