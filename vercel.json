@@ -1,8 +1,5 @@
 {
     "version": 2,
- 
-    "env": {
-      "MY_ENV_VARIABLE": "value"
-    },
+   
     "buildCommand": "npm run build"
   }

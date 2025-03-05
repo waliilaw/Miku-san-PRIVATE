@@ -159,7 +159,7 @@ export function ProjectsForm({ projects, setProjects }: ProjectsFormProps) {
             <Label htmlFor="image">Project Image</Label>
             <div className="flex gap-2">
               <Input
-                id="image"
+                id="Image"
                 value={newProject.image}
                 onChange={(e) => setNewProject({ ...newProject, image: e.target.value })}
                 placeholder="Enter image URL or upload"

@@ -22,6 +22,17 @@ import { themes } from "@/lib/themes"
 import type { ThemeType } from "@/lib/themes"
 import Dither from "@/components/Dither"
 
+interface projects{
+  title: string
+  id: string
+  description: string
+  image: string
+  technologies: string[]
+  liveUrl: string | null
+  githubUrl: string | null
+  order: number
+}[]
+
 const tabVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 1000 : -1000,
@@ -158,12 +169,14 @@ function CreatePage() {
     }
   }
 
-  const navigateTab = (newStep: (typeof TABS)[number]) => {
-    const currentIndex = TABS.indexOf(step)
-    const newIndex = TABS.indexOf(newStep)
+  const navigateTab = (newStep: string) => {
+    if (["profile", "skills", "projects", "social", "theme"].includes(newStep)) {
+      const currentIndex = TABS.indexOf(step)
+      const newIndex = TABS.indexOf(newStep as "profile" | "skills" | "projects" | "social" | "theme")
 
-    setDirection(newIndex > currentIndex ? 1 : -1)
-    setStep(newStep)
+      setDirection(newIndex > currentIndex ? 1 : -1)
+      setStep(newStep as "profile" | "skills" | "projects" | "social" | "theme")
+    }
   }
 
   const nextTab = () => {
@@ -297,7 +310,7 @@ function CreatePage() {
                       />
                     </TabsContent>
                     <TabsContent value="projects" className="mt-0">
-                      <ProjectsForm projects={projects} setProjects={setProjects} />
+                      <ProjectsForm projects={projects} setProjects={setProjects as any}  />
                     </TabsContent>
                     <TabsContent value="social" className="mt-0">
                       <SocialForm socialLinks={socialLinks} setSocialLinks={setSocialLinks} />

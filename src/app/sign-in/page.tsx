@@ -1,17 +1,30 @@
 "use client"
 
-import { SignIn } from "@clerk/nextjs";
+import { SignIn, useSignIn } from "@clerk/nextjs";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
+  const router = useRouter();
+  const { isSignedIn  } : any  = useSignIn();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      // Redirect to the create page or the user's edit page after signing in
+      const username = "user-username"; // Replace with logic to get the actual username
+      router.push(`/${username}/edit`); // Redirect to the edit page
+    }
+  }, [isSignedIn, router]);
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 relative">
+    <div className="flex items-center justify-center min-h-screen bg-black relative">
       <div className="relative z-10 ">
         <SignIn 
           path="/sign-in" 
           routing="path" 
-          afterSignInUrl="/create" 
+          fallbackRedirectUrl="/create"
         />
-        <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+        <button className="mt-4 bg-black-500 border border-black text-white px-4 py-2 rounded">
           Custom Button
         </button>
       </div>

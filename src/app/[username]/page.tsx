@@ -6,14 +6,11 @@ import { DeletePortfolioDialog } from "@/components/delete-portfolio-dialog"
 import { Github, Twitter, Linkedin, Instagram, Mail, MapPin } from 'lucide-react'
 import { Card } from "@/components/ui/card"
 import Dither from "@/components/Dither"
-import ThemeHandler from "@/components/ThemeHandler"
 import { themes } from "@/lib/themes"
-import Image from 'next/image'
+
 
 interface PageProps {
-  params: {
-    username: string;
-  };
+  params: any;
 }
 
 const PortfolioPage = async ({ params }: PageProps) => {
@@ -59,10 +56,12 @@ const PortfolioPage = async ({ params }: PageProps) => {
             <div className="flex flex-col md:flex-row items-center justify-center gap-6">
               <div className="flex-shrink-0">
                 <div className="relative">
-                <Image
+                <img
   src={portfolio.avatar || "/miku.jpg"}
   alt={portfolio.name}
-  className={`w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-primary shadow-[0_0_15px rgba(57,197,187,0.4)] transition-transform duration-300 hover:scale-110`} // Added hover effect
+  width={160}
+  height={160}
+  className={`w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-primary shadow-[0_0_15px rgba(57,197,187,0.4)] transition-transform duration-300 hover:scale-110`}
 />
                 </div>
               </div>
@@ -176,8 +175,8 @@ const PortfolioPage = async ({ params }: PageProps) => {
                 className={`overflow-hidden bg-black/60 backdrop-blur-md border-none shadow-[0_0_15px rgba(57,197,187,0.2)] rounded-xl transition-all duration-300 hover:shadow-[0_0_25px rgba(57,197,187,0.4)] hover:translate-y-[-5px]`}
               >
                 <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={project.image || "/placeholder.png"}
+                  <img
+                    src={project.image || "/miku.jpg"}
                     alt={project.title}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                   />

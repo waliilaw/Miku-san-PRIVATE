@@ -19,6 +19,7 @@ import { ArrowLeft, ArrowRight, Save, Eye, Home } from "lucide-react"
 import { UserButton } from "@clerk/clerk-react"
 import { themes } from "@/lib/themes"
 import type { ThemeType } from "@/lib/themes"
+import React from "react"
 
 const tabVariants = {
   enter: (direction: number) => ({
@@ -37,10 +38,10 @@ const tabVariants = {
 
 const TABS = ["profile", "skills", "projects", "social", "theme"] as const
 
-export default function EditPortfolio({ params }: { params: { username: string } }) {
-  const router = useRouter()
+const EditPortfolio = ({ params }: any ) => {
   const { user } = useUser()
-  const [step, setStep] = useState<(typeof TABS)[number]>("profile")
+  const router = useRouter()
+  const [step, setStep] = useState<"profile" | "skills" | "projects" | "social" | "theme">("profile")
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [direction, setDirection] = useState(0)
@@ -62,10 +63,24 @@ export default function EditPortfolio({ params }: { params: { username: string }
   const [bio, setBio] = useState("")
   const [projects, setProjects] = useState<any[]>([])
 
+  // Unwrap params using React.use()
+  const [username, setUsername] = useState<string>("")
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const unwrappedParams = await params
+      setUsername(unwrappedParams.username)
+    }
+
+    fetchUsername()
+  }, [params])
+
   useEffect(() => {
     const fetchPortfolio = async () => {
+      if (!username) return
+
       try {
-        const response = await fetch(`/api/${params.username}`)
+        const response = await fetch(`/api/${username}`)
         if (response.ok) {
           const data = await response.json()
           // Populate form states
@@ -91,7 +106,7 @@ export default function EditPortfolio({ params }: { params: { username: string }
     }
 
     fetchPortfolio()
-  }, [params.username, router])
+  }, [username, router])
 
   useEffect(() => {
     if (theme) {
@@ -107,7 +122,7 @@ export default function EditPortfolio({ params }: { params: { username: string }
     setSaving(true)
 
     try {
-      const response = await fetch(`/api/${params.username}`, {
+      const response = await fetch(`/api/${username}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -126,7 +141,7 @@ export default function EditPortfolio({ params }: { params: { username: string }
 
       if (response.ok) {
         toast.success("Portfolio updated successfully!")
-        router.push(`/${params.username}`)
+        router.push(`/${username}`)
       } else {
         const error = await response.json()
         toast.error(error.message)
@@ -170,24 +185,26 @@ export default function EditPortfolio({ params }: { params: { username: string }
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
 
-      <div className="fixed top-4 right-4 z-50 flex items-center gap-4">
+      <div className="fixed top-0 py-3 w-full z-50 flex left-0 gap-6 bg-black/30 backdrop-blur-sm item-center  text-white hover:bg-black/50 ">
         <Button
           onClick={() => router.push("/")}
           variant="ghost"
-          className="bg-black/30 backdrop-blur-sm text-white hover:bg-black/50"
+          className=" text-white"
         >
           <Home className="w-5 h-5 mr-2" />
           Home
         </Button>
         <Button
-          onClick={() => router.push(`/${params.username}`)}
+          onClick={() => router.push(`/${username}`)}
           variant="ghost"
-          className="bg-black/30 backdrop-blur-sm text-white hover:bg-black/50"
+          className="text-white"
         >
           <Eye className="w-5 h-5 mr-2" />
           View Portfolio
         </Button>
+        <div className="fixed right-4 top-4">
         <UserButton />
+        </div>
       </div>
 
       <div className="container mx-auto px-4 py-16 relative z-10 max-w-4xl">
@@ -205,8 +222,16 @@ export default function EditPortfolio({ params }: { params: { username: string }
           </p>
         </motion.div>
 
-        <Card className="bg-black/40 backdrop-blur-md border-none shadow-[0_0_15px_rgba(57,197,187,0.2)] rounded-xl overflow-hidden">
-          <Tabs value={step} onValueChange={(value: "profile" | "skills" | "projects" | "social" | "theme") => navigateTab(value)} className="w-full">
+        <Card className="bg-black/40 backdrop-blur-md border-none shadow-[0_0_15px rgba(57,197,187,0.2)] rounded-xl overflow-hidden">
+          <Tabs 
+            value={step} 
+            onValueChange={(value: string) => {
+              if (["profile", "skills", "projects", "social", "theme"].includes(value)) {
+                navigateTab(value as "profile" | "skills" | "projects" | "social" | "theme");
+              }
+            }} 
+            className="w-full"
+          >
             <div className="px-0 sm:px-6 pt-6 overflow-x-auto">
               <TabsList className="grid grid-cols-5 gap-1 sm:gap-4 bg-black/50 p-1 rounded-lg w-full min-w-max">
                 <TabsTrigger
@@ -241,6 +266,7 @@ export default function EditPortfolio({ params }: { params: { username: string }
                 </TabsTrigger>
               </TabsList>
             </div>
+
 
             <div className="p-4 sm:p-6 overflow-hidden">
  
@@ -309,4 +335,6 @@ export default function EditPortfolio({ params }: { params: { username: string }
     </div>
   )
 }
+
+export default EditPortfolio
 
